@@ -22,6 +22,8 @@
             params: {
               "circle" : true,
               "color" : "#ffae23",
+              "borderColor" : '#000000',
+              "borderSize" : 6,
               "nodeSize" : 20,
               "lineWidth" : 6
             },
@@ -52,8 +54,8 @@
                 }
                 ctx.fillStyle = that.params.color;
                 ctx.fill();
-                ctx.lineWidth = 5;
-                ctx.strokeStyle = '#003300';
+                ctx.lineWidth = that.params.borderSize;
+                ctx.strokeStyle = that.params.borderColor;
                 ctx.stroke();
 
                 ctx.fillStyle = 'blue';
@@ -182,7 +184,9 @@
           var gui = new dat.GUI();
           var params = sys.renderer.params;
           gui.add(params, 'circle');
-          gui.add(params, 'color');
+          gui.addColor(params, 'color');
+          gui.addColor(params, 'borderColor');
+          gui.add(params, 'borderSize', 0, 30);
           gui.add(params, 'nodeSize', 10, 100);
           gui.add(params, 'lineWidth', 1, 25);
         })
