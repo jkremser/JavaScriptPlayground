@@ -86,7 +86,6 @@ sigma.parsers.gexf('data/' + path, {container: 'graph-container'},
     }
 
     var gui = new dat.GUI();
-    window.gui = gui;
     gui.width = 350
     var params = {
       "labelThreshold" : 8,
@@ -95,15 +94,19 @@ sigma.parsers.gexf('data/' + path, {container: 'graph-container'},
       "borderSize" : 0,
       "defaultNodeBorderColor" : '#006600',
       "defaultLabelHoverColor" : '#000000',
-      "dataSet" : 'codeminer.gexf',
+      "dataSet" : path,
       "drawLabels" : true,
       "drawEdges" : true,
       "drawNodes" : true,
       "enableHovering" : true
     }
 
-    gui.add(params, 'dataSet', [ 'codeminer.gexf', 'arctic.gexf', 'WordAdjacency.gexf' ] ).onChange(function(value){
-      s.settings("dataSet", value);
+    gui.add(params, 'dataSet', ['arctic.gexf', 'codeminer.gexf', 'WordAdjacency.gexf']).onFinishChange(function(value){
+      if (value != 'codeminer.gexf') {
+        $("#comment").hide();
+      } else {
+        $("#comment").show();
+      }
       gui.destroy();
       $("#graph-container").html("");
       loadChart(value);
@@ -134,7 +137,7 @@ sigma.parsers.gexf('data/' + path, {container: 'graph-container'},
       s.settings("defaultLabelSize", value);
       s.refresh();
     });
-    labels.add(params, 'defaultLabelColor').onChange(function(value){
+    labels.addColor(params, 'defaultLabelColor').onChange(function(value){
       s.settings("defaultLabelColor", value);
       s.refresh();
     });
@@ -144,11 +147,11 @@ sigma.parsers.gexf('data/' + path, {container: 'graph-container'},
       s.settings("borderSize", value);
       s.refresh();
     });
-    hovers.add(params, 'defaultNodeBorderColor').onChange(function(value){
+    hovers.addColor(params, 'defaultNodeBorderColor').onChange(function(value){
       s.settings("defaultNodeBorderColor", value);
       s.refresh();
     });
-    hovers.add(params, 'defaultLabelHoverColor').onChange(function(value){
+    hovers.addColor(params, 'defaultLabelHoverColor').onChange(function(value){
       s.settings("defaultLabelHoverColor", value);
       s.refresh();
     });
@@ -157,6 +160,7 @@ sigma.parsers.gexf('data/' + path, {container: 'graph-container'},
       $("#commentText").html(e.data.node.attributes.comment);
       //console.log(e.type, e.data.node.attributes.comment);
     });
+    s.refresh();
   });
 }
 loadChart('codeminer.gexf');
