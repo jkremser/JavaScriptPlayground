@@ -1,2 +1,4 @@
 == JavaScript Playground
 just for fun
+
+demos: http://jiri-kremser.github.io/JavaScriptPlayground/
