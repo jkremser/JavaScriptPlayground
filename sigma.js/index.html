@@ -1,0 +1,164 @@
+<script src="js/sigma.core.js"></script>
+<script src="js/conrad.js"></script>
+<script src="js/sigma.utils.js"></script>
+<script src="js/sigma.polyfills.js"></script>
+<script src="js/sigma.settings.js"></script>
+<script src="js/sigma.classes.dispatcher.js"></script>
+<script src="js/sigma.classes.configurable.js"></script>
+<script src="js/sigma.classes.graph.js"></script>
+<script src="js/sigma.classes.camera.js"></script>
+<script src="js/sigma.classes.quad.js"></script>
+<script src="js/sigma.captors.mouse.js"></script>
+<script src="js/sigma.captors.touch.js"></script>
+<script src="js/sigma.renderers.canvas.js"></script>
+<script src="js/sigma.webgl.nodes.def.js"></script>
+<script src="js/sigma.webgl.nodes.fast.js"></script>
+<script src="js/sigma.webgl.edges.def.js"></script>
+<script src="js/sigma.webgl.edges.fast.js"></script>
+<script src="js/sigma.renderers.webgl.js"></script>
+<script src="js/sigma.renderers.def.js"></script>
+<script src="js/sigma.canvas.labels.def.js"></script>
+<script src="js/sigma.canvas.hovers.def.js"></script>
+<script src="js/sigma.canvas.nodes.def.js"></script>
+<script src="js/sigma.canvas.edges.def.js"></script>
+<script src="js/sigma.canvas.edges.arrow.js"></script>
+<script src="js/sigma.canvas.edges.curve.js"></script>
+<script src="js/sigma.middlewares.rescale.js"></script>
+<script src="js/sigma.middlewares.copy.js"></script>
+<script src="js/sigma.misc.animation.js"></script>
+<script src="js/sigma.misc.bindEvents.js"></script>
+<script src="js/sigma.misc.drawHovers.js"></script>
+<script src="js/gexf-parser.js"></script>
+<script src="js/sigma.parsers.gexf.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script type="text/javascript" src="js/dat.gui.min.js"></script>
+  <style>
+    #comment {
+      top: 3px;
+      height: 60%;
+      left: 3px;
+      width: 35%;
+      color: #000;
+      background: rgba(255,220,200,0.5);
+      z-index: 1;
+      position: absolute;
+      border: 2px solid;
+      border-radius: 15px;
+    }
+    #graph-container {
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      position: absolute;
+    }
+    .label {
+      color: red;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 1;
+      font-family: sans-serif;
+    }
+    #commentText {
+      padding-top: 30px;
+      font-size: 9px;
+    }
+  </style>
+
+<div id="comment">
+  <div class="label">Comment (zooming works)</div>
+  <div id="commentText"></div>
+</div>
+<div id="graph-container"></div>
+<script>
+var sig;
+
+function loadChart(path) {
+sigma.parsers.gexf('data/' + path, {container: 'graph-container'}, 
+  function(s) {
+    sig = s;
+    s.settings("labelThreshold", 5);
+    s.refresh();
+    var refresh = function() {
+      s.refresh();
+    }
+
+    var gui = new dat.GUI();
+    window.gui = gui;
+    gui.width = 350
+    var params = {
+      "labelThreshold" : 8,
+      "defaultLabelSize" : 14,
+      "defaultLabelColor" : '#000000',
+      "borderSize" : 0,
+      "defaultNodeBorderColor" : '#006600',
+      "defaultLabelHoverColor" : '#000000',
+      "dataSet" : 'codeminer.gexf',
+      "drawLabels" : true,
+      "drawEdges" : true,
+      "drawNodes" : true,
+      "enableHovering" : true
+    }
+
+    gui.add(params, 'dataSet', [ 'codeminer.gexf', 'arctic.gexf', 'WordAdjacency.gexf' ] ).onChange(function(value){
+      s.settings("dataSet", value);
+      gui.destroy();
+      $("#graph-container").html("");
+      loadChart(value);
+    });
+    gui.add(params, 'drawLabels').onChange(function(value){
+      s.settings("drawLabels", value);
+      s.refresh();
+    });
+    gui.add(params, 'drawNodes').onChange(function(value){
+      s.settings("drawNodes", value);
+      s.refresh();
+    });
+    gui.add(params, 'drawEdges').onChange(function(value){
+      s.settings("drawEdges", value);
+      s.refresh();
+    });
+    gui.add(params, 'enableHovering').onChange(function(value){
+      s.settings("enableHovering", value);
+      s.refresh();
+    });
+
+    var labels = gui.addFolder('Node Labels');
+    labels.add(params, 'labelThreshold', 0, 15).onChange(function(value){
+      s.settings("labelThreshold", value);
+      s.refresh();
+    });
+    labels.add(params, 'defaultLabelSize', 3, 30).onChange(function(value){
+      s.settings("defaultLabelSize", value);
+      s.refresh();
+    });
+    labels.add(params, 'defaultLabelColor').onChange(function(value){
+      s.settings("defaultLabelColor", value);
+      s.refresh();
+    });
+    labels.open();
+    var hovers = gui.addFolder('Node Hovers');
+    hovers.add(params, 'borderSize', 0, 20).onChange(function(value){
+      s.settings("borderSize", value);
+      s.refresh();
+    });
+    hovers.add(params, 'defaultNodeBorderColor').onChange(function(value){
+      s.settings("defaultNodeBorderColor", value);
+      s.refresh();
+    });
+    hovers.add(params, 'defaultLabelHoverColor').onChange(function(value){
+      s.settings("defaultLabelHoverColor", value);
+      s.refresh();
+    });
+
+    s.bind('overNode outNode clickNode doubleClickNode', function(e) {
+      $("#commentText").html(e.data.node.attributes.comment);
+      //console.log(e.type, e.data.node.attributes.comment);
+    });
+  });
+}
+loadChart('codeminer.gexf');
+
+</script>
