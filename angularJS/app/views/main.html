@@ -15,14 +15,18 @@
   </p>
   <p><a class="btn btn-lg btn-success" ng-href="#">Splendid!</a></p>
 </div>
-
+<input type="text" ng-model="rhqHostname" placeholder="Enter hostname of RHQ server"/>
   <h3>Metrics:</h3>
-    <ul>
-        <li ng-repeat="metric in metrics">{{metric}}</li>
-    </ul>
+    <!--{{metrics}}-->
+    <hr/>
 
+  <div graph data="foograph" opts="{xlabel: 'Local Time', legend: 'always',
+                              showRangeSelector: true, labels: ['Time', 'Value'],
+                              ylabel: 'Value', height: 420}"
+                              />
 
-  <h3>Awesome things:</h3>
+  <div graph data="metrics" opts="{ labels: ['Time', 'Value']}" />
+
     <ul>  
         <!-- Here we use the AngularJS directive: ng-repeat to loop through our awesomeThings 
         and print them out as list items using the {{}} bindings -->
