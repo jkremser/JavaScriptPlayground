@@ -4,63 +4,50 @@
     <li><a ng-href="#">About</a></li>
     <li><a ng-href="#">Contact</a></li>
   </ul>
-  <h3 class="text-muted">another</h3>
+  <h3 class="text-muted">RHQ + AngularJS = ♥</h3>
 </div>
 
 <div class="jumbotron">
-  <h1>'Allo, 'Allo!</h1>
-  <p class="lead">
-    <img src="images/yeoman.png" alt="I'm Yeoman"><br>
-    Always a pleasure scaffolding your apps.
-  </p>
-  <p><a class="btn btn-lg btn-success" ng-href="#">Splendid!</a></p>
+  <h1>Metrics</h1>
+RHQ server IP: <input type="text" ng-model="rhqConfig.ip" value={{rhqConfig.ip}} />
+(CORS filter needs to be enabled)
+  <p><a class="btn btn-lg btn-success" ng-href="#">Refresh!</a></p>
 </div>
-<input type="text" ng-model="rhqHostname" placeholder="Enter hostname of RHQ server"/>
-  <h3>Metrics:</h3>
-    <!--{{metrics}}-->
-    <hr/>
-
-  <div graph data="foograph" opts="{xlabel: 'Local Time', legend: 'always',
+  <br/><hr/>
+  <h2>Free space on /</h2>
+  <div graph schedule="10228" host="{{rhqConfig.ip}}" opts="{ xlabel: 'Local Time', legend: 'always',
                               showRangeSelector: true, labels: ['Time', 'Value'],
-                              ylabel: 'Value', height: 420}"
+                              ylabel: 'Value', height: 420 }"
                               />
 
-  <div graph data="metrics" opts="{ labels: ['Time', 'Value']}" />
+  <br/><hr/>
 
-    <ul>  
-        <!-- Here we use the AngularJS directive: ng-repeat to loop through our awesomeThings 
-        and print them out as list items using the {{}} bindings -->
-        <li ng-repeat="thing in awesomeThings">{{thing}}</li>
-    </ul>
+  <div class="content container">
+    <div class="row">
+      <div class="col-lg-5">
+        <h2>Storage Node JVM - Heap Usage</h2>
+        <div graph schedule="11556"  host="{{rhqConfig.ip}}" opts="{ labels: ['Time', 'Value'], height: 420, width: 520 }"/>
+      </div>
+      <div class="col-lg-1"/>
+      <div class="col-lg-5">
+        <h2>Storage Node JVM - Total Compilation Time</h2>
+        <div graph schedule="11544"  host="{{rhqConfig.ip}}" opts="{ labels: ['Time', 'Value'], height: 420, width: 520 }"/> 
+      </div>
+    </div>
+  </div>
+  <br/><hr/>
 
-<ul>
-  <li class="dropdown">
-    <a class="dropdown-toggle">
-      Click me to see some awesome things!
-    </a>
-    <ul class="dropdown-menu">
-      <li ng-repeat="thing in awesomeThings">
-        <a>{{thing}}</a>
-      </li>
-    </ul>
-  </li>
-</ul>
-
-<div class="row marketing">
-  <h4>HTML5 Boilerplate</h4>
-  <p>
-    HTML5 Boilerplate is a professional front-end template for building fast, robust, and adaptable web apps or sites.
-  </p>
-
-  <h4>Angular</h4>
-  <p>
-    AngularJS is a toolset for building the framework most suited to your application development.
-  </p>
-
-  <h4>Karma</h4>
-  <p>Spectacular Test Runner for JavaScript.</p>
-</div>
+  <div class="content container">
+    <div class="row">
+        <div class="col-lg-5">
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborumfoo
+        </div>
+        <div class="col-lg-7">
+          Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
+        </div>
+    </div> 
+  </div>
 
 <div class="footer">
-  <p>♥ from the Yeoman team</p>
+  <p>something clever goes here</p>
 </div>

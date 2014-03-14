@@ -2,31 +2,21 @@
 
 angular.module('anotherApp')
   .controller('MainCtrl', function ($scope, $http) {
-    $scope.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma',
-      'Scala',
-      'Java 8',
-      'foobar'
-    ];
-    $scope.rhqHostname = 'localhost';
-    //$http.defaults.headers.common.Authentication = 'Basic cmhxYWRtaW46cmhxYWRtaW4=';
-    $http({ method: 'GET', url: 'http://127.0.0.1:7080/rest/metric/data/10012/raw.json' }).
-      success(function (data, status, headers, config) {
-        $scope.metrics = data.map(function(foo){ return [new Date(foo.timeStamp), foo.value]; });
-        $scope.foograph = [[new Date(1394563626277),4309663744], [new Date(1394563626277),4309684224], [new Date(1394569295152),20], [new Date(1394571695149),50], [new Date(1394572554062),70]];
-      }).
-      error(function (data, status, headers, config) {
-        console.log('Error - status: ' + status + ', headers: ' + headers + ', config: ' + config + ', data: ' + data);
-      });
+    var config = {
+      ip: '127.0.0.1'
+    }
+    $scope.rhqConfig = config;
   })
 
-  .directive('graph', function ($parse, $q) {
+  .directive('graph', function ($parse, $q, $http) {
     return {
       restrict: 'A',
       replace: true,
-      scope: {data: '=', opts: '=', options: '='},
+      scope: {
+              schedule: '@',
+              host: '@',
+              opts: '='
+             },
       link: function (scope, element, attrs) {
         var dataArrived = $q.defer();
         dataArrived.promise.then(function (graphData) {
@@ -36,6 +26,14 @@ angular.module('anotherApp')
           scope.graph.setSelection(lastPoint);
           scope.$emit('dygraphCreated', element[0].id, scope.graph);
         });
+        $http({ method: 'GET', url: 'http://' + scope.host +':7080/rest/metric/data/' + scope.schedule +'/raw.json' }).
+          success(function (data, status, headers, config) {
+            var filteredData = data.map(function(x){ return [new Date(x.timeStamp), x.value]; });
+            dataArrived.resolve(filteredData);
+          }).
+          error(function (data, status, headers, config) {
+            console.log('Error - status: ' + status);
+          });
         var removeInitialDataWatch = scope.$watch('data', function (newValue, oldValue, scope) {
           if ((newValue !== oldValue) && (newValue.length > 0)) {
             dataArrived.resolve(newValue);
