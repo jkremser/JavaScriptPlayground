@@ -135,18 +135,18 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     grunt: subGrunts,
-    // closureLint: {
-    //   app: {
-    //     closureLinterPath: '/usr/local/bin',
-    //     command: 'gjslint',
-    //     src: coreJsFiles,
-    //     options: {
-    //       stdout: true,
-    //       strict: true,
-    //       opt: '--disable 6,13'
-    //     }
-    //   }
-    // },
+    less: {
+      development: {
+        options: {
+          compress: true,
+          yuicompress: true,
+          optimization: 2
+        },
+        files: {
+          "./build/css/inventory.css": "./inventory/less/inventory.less" // destination file and source file
+        }
+      }
+    },
     jshint: {
       all: coreJsFiles,
       options: {
@@ -237,8 +237,8 @@ module.exports = function(grunt) {
   require('load-grunt-tasks')(grunt);
 
   // By default, will check lint, hint, test and minify:
-  grunt.registerTask('default', [/*'closureLint',*/ 'jshint', 'qunit', 'sed', 'grunt', 'uglify']);
-  grunt.registerTask('release', [/*'closureLint',*/ 'jshint', 'qunit', 'sed', 'grunt', 'uglify', 'zip']);
+  grunt.registerTask('default', [/*'closureLint',*/ 'jshint', 'qunit', 'less', 'sed', 'grunt', 'uglify']);
+  grunt.registerTask('release', [/*'closureLint',*/ 'jshint', 'qunit', 'less', 'sed', 'grunt', 'uglify', 'zip']);
   grunt.registerTask('npmPrePublish', ['uglify:plugins', 'grunt', 'concat:require']);
   grunt.registerTask('build', ['uglify', 'grunt', 'concat:require']);
   grunt.registerTask('test', ['qunit']);
