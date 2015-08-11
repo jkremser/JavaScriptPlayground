@@ -109,8 +109,16 @@ module.exports = function(grunt) {
     'statistics.louvain'
   ];
 
+  var usedPlugins = ['plugins.animate',
+                     'parsers.json',
+                     'plugins.locate',
+                     'layout.forceLink',
+                     'layout.forceAtlas2'
+  ];
+
   var pluginFiles = [],
       subGrunts = {};
+  var sigmaMinPath = 'build/sigma.min.js';
 
   plugins.forEach(function(p) {
     var dir = './plugins/sigma.' + p + '/';
@@ -127,18 +135,18 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     grunt: subGrunts,
-    closureLint: {
-      app: {
-        closureLinterPath: '/usr/local/bin',
-        command: 'gjslint',
-        src: coreJsFiles,
-        options: {
-          stdout: true,
-          strict: true,
-          opt: '--disable 6,13'
-        }
-      }
-    },
+    // closureLint: {
+    //   app: {
+    //     closureLinterPath: '/usr/local/bin',
+    //     command: 'gjslint',
+    //     src: coreJsFiles,
+    //     options: {
+    //       stdout: true,
+    //       strict: true,
+    //       opt: '--disable 6,13'
+    //     }
+    //   }
+    // },
     jshint: {
       all: coreJsFiles,
       options: {
@@ -183,7 +191,7 @@ module.exports = function(grunt) {
       },
       dist: {
         src: coreJsFiles,
-        dest: 'build/sigma.js'
+        dest: sigmaMinPath
       },
       require: {
         src: npmJsFiles,
@@ -193,11 +201,21 @@ module.exports = function(grunt) {
     sed: {
       version: {
         recursive: true,
-        path: 'examples/',
+        path: 'inventory/',
         pattern: /<!-- START SIGMA IMPORTS -->[\s\S]*<!-- END SIGMA IMPORTS -->/g,
         replacement: ['<!-- START SIGMA IMPORTS -->'].concat(coreJsFiles.map(function(path) {
           return '<script src="../' + path + '"></script>';
         }).concat('<!-- END SIGMA IMPORTS -->')).join('\n')
+      },
+      prod: {
+        recursive: true,
+        path: 'inventory/',
+        pattern: /<!-- START SIGMA STUFF -->[\s\S]*<!-- END SIGMA STUFF -->/g,
+        replacement: ['<!-- START SIGMA STUFF -->'].concat('<script src="../' + sigmaMinPath + '"></script>')
+          .concat(usedPlugins.map(function(path) {
+            return '<script src="../build/plugins/sigma.' + path + '.min.js"></script>';
+          })
+        .concat('<!-- END SIGMA STUFF -->')).join('\n')
       }
     },
     zip: {
@@ -219,8 +237,8 @@ module.exports = function(grunt) {
   require('load-grunt-tasks')(grunt);
 
   // By default, will check lint, hint, test and minify:
-  grunt.registerTask('default', ['closureLint', 'jshint', 'qunit', 'sed', 'grunt', 'uglify']);
-  grunt.registerTask('release', ['closureLint', 'jshint', 'qunit', 'sed', 'grunt', 'uglify', 'zip']);
+  grunt.registerTask('default', [/*'closureLint',*/ 'jshint', 'qunit', 'sed', 'grunt', 'uglify']);
+  grunt.registerTask('release', [/*'closureLint',*/ 'jshint', 'qunit', 'sed', 'grunt', 'uglify', 'zip']);
   grunt.registerTask('npmPrePublish', ['uglify:plugins', 'grunt', 'concat:require']);
   grunt.registerTask('build', ['uglify', 'grunt', 'concat:require']);
   grunt.registerTask('test', ['qunit']);
