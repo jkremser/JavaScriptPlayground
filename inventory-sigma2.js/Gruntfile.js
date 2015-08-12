@@ -147,6 +147,20 @@ module.exports = function(grunt) {
         }
       }
     },
+    server: {
+      port: 8888,
+      base: '.'
+    },
+    clean: {
+        build: {
+            files: [{
+                dot: true,
+                src: [
+                    'build/**'
+                ]
+            }]
+        }
+    },
     jshint: {
       all: coreJsFiles,
       options: {
@@ -231,6 +245,46 @@ module.exports = function(grunt) {
           return filepath.replace(/build\//, '');
         }
       }
+    },
+    connect: {
+      options: {
+        port: 8888,
+        // Change this to '0.0.0.0' to access the server from outside.
+        hostname: 'localhost',
+        livereload: 35729
+      },
+      livereload: {
+        options: {
+          open: true,
+          base: [
+            '.'
+          ]
+        }
+      }
+    },
+    watch: {
+      js: {
+        files: ['js/{,*/}*.js'],
+        tasks: ['newer:jshint:all'],
+        options: {
+          livereload: true
+        }
+      },
+      styles: {
+        files: ['less/{,*/}*.less'],
+        tasks: ['newer:less']
+      },
+      gruntfile: {
+        files: ['Gruntfile.js']
+      },
+      livereload: {
+        options: {
+          livereload: '<%= connect.options.livereload %>'
+        },
+        files: [
+          'inventory/{,*/}*.html'
+        ]
+      }
     }
   });
 
@@ -242,6 +296,20 @@ module.exports = function(grunt) {
   grunt.registerTask('npmPrePublish', ['uglify:plugins', 'grunt', 'concat:require']);
   grunt.registerTask('build', ['uglify', 'grunt', 'concat:require']);
   grunt.registerTask('test', ['qunit']);
+
+    grunt.registerTask('serve', function (target) {
+    if (target === 'dist') {
+      return grunt.task.run(['build', 'connect:dist:keepalive']);
+    }
+
+    grunt.task.run([
+      'clean:build',
+      'default',
+//      'concurrent:server',
+      'connect:livereload',
+      'watch'
+    ]);
+  });
 
   // For travis-ci.org, only launch tests:
   grunt.registerTask('travis', ['qunit']);
