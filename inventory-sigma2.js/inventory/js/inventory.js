@@ -1,26 +1,26 @@
 ;(function(undefined) {
   'use strict';
-var $ = function (id) {
-  return document.getElementById(id);
-};
+  var $ = function (id) {
+    return document.getElementById(id);
+  };
 
 // Initialize sigma with a dataset:
 // sigma.parsers.json('data/simple.json', {
 //sigma.parsers.json('data/arctic.json', {
 // sigma.parsers.json('data/dump_pretty.json', {
-sigma.parsers.json('data/inv-light.json', {
-  container: 'graph-container',
-  settings: {
-    edgeColor: 'default',
-    defaultEdgeColor: '#ccc',
-    defaultNodeColor: '#555',
-    animationsTime: 2000,
-    labelThreshold: 8,
-    zoomMin: 0.01,
-    zoomMax: 10,
-    minEdgeSize: 0.1,
-    maxEdgeSize: 0.1,
-    edgesPowRatio: 0.01
+  sigma.parsers.json('data/inv-light.json', {
+    container: 'graph-container',
+    settings: {
+      edgeColor: 'default',
+      defaultEdgeColor: '#ccc',
+      defaultNodeColor: '#555',
+      animationsTime: 2000,
+      labelThreshold: 8,
+      zoomMin: 0.01,
+      zoomMax: 10,
+      minEdgeSize: 0.1,
+      maxEdgeSize: 0.1,
+      edgesPowRatio: 0.01
     // autoRescale: false
   }
 }, function(s) {
@@ -43,6 +43,15 @@ sigma.parsers.json('data/inv-light.json', {
   var categories = {};
 
   var allEdges = s.graph.edges();
+
+// just testing
+  InventoryRest.getTenant(function(data) {
+    console.log(data);
+  });
+
+  InventoryRest.getRelationships('tenants', function(data) {
+    console.log(data);
+  });
 
   s.graph.nodes().forEach(function (n) {
     n.label = n.type + ': ' + n.name;

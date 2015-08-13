@@ -148,7 +148,7 @@ module.exports = function(grunt) {
       }
     },
     server: {
-      port: 8888,
+      port: 9876,
       base: '.'
     },
     clean: {
@@ -248,7 +248,7 @@ module.exports = function(grunt) {
     },
     connect: {
       options: {
-        port: 8888,
+        port: 9876,
         // Change this to '0.0.0.0' to access the server from outside.
         hostname: 'localhost',
         livereload: 35729
@@ -267,7 +267,7 @@ module.exports = function(grunt) {
         files: ['js/{,*/}*.js'],
         tasks: ['newer:jshint:all'],
         options: {
-          livereload: true
+          livereload: '<%= connect.options.livereload %>'
         }
       },
       styles: {
@@ -305,7 +305,6 @@ module.exports = function(grunt) {
     grunt.task.run([
       'clean:build',
       'default',
-//      'concurrent:server',
       'connect:livereload',
       'watch'
     ]);
