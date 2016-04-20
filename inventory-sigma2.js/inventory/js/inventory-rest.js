@@ -27,12 +27,22 @@ var InventoryRest = ( function(window, undefined) {
 		});
 	}
 
-
+	function getNodeByPath(path, callback) {
+		$.ajax({
+			url: base + 'path' + path,
+			headers: {
+				'Authorization': 'Basic ' + btoa(user + ':' + password)
+			},
+		}).then(function(data) {
+			callback(data);
+		});
+	}
 
 
 	return {
 		getTenant : getTenant,
-		getRelationships : getRelationships
+		getRelationships : getRelationships,
+		getNodeByPath: getNodeByPath
 	};
 
 
