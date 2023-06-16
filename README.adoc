@@ -1,4 +1,4 @@
 == JavaScript Playground
 just for fun
 
-demos: http://jiri-kremser.github.io/JavaScriptPlayground/
+demos: http://jkremser.github.io/JavaScriptPlayground/
